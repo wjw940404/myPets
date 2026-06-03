@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 开发环境
 
-- **JDK**: 21
+- **JDK**: 21（JAVA_HOME 需指向 `C:\Program Files\Java\jdk-21.0.11`）
 - **IDE**: IntelliJ IDEA（项目文件在 `.idea/` 目录）
 - **构建系统**: Maven（`pom.xml`）
 
@@ -34,11 +34,30 @@ myPets/
 ## 常见命令
 
 ```bash
+# 运行应用（默认 dev 环境 - H2 内存库）
+mvn spring-boot:run
+
+# 指定环境运行
+mvn spring-boot:run -Dspring-boot.run.profiles=dev     # H2
+mvn spring-boot:run -Dspring-boot.run.profiles=prod    # MySQL
+
+# 打包并运行生产 JAR
+mvn clean package -P prod
+java -jar target/myPets-1.0-SNAPSHOT.jar --spring.profiles.active=prod
+
 # Maven 构建
-mvn clean compile        # 编译
-mvn clean test           # 运行测试
-mvn clean package        # 打包 JAR
-mvn clean install        # 安装到本地仓库
+mvn clean compile              # 编译
+mvn clean test                 # 运行测试
+mvn clean package              # 打包可执行 JAR
+mvn clean install              # 安装到本地仓库
+```
+
+## Profile 说明
+
+| Profile | 数据库 | 场景 |
+|---------|--------|------|
+| `dev`（默认） | H2 内存库 | 本地开发调试，H2 Console 访问 `/h2-console` |
+| `prod` | MySQL | 生产环境，密码通过环境变量 `MYSQL_PASSWORD` 设置 |
 
 # 查看当前状态
 git status
